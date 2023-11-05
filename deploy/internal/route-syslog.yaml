@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: noobaa
+  name: noobaa-syslog
+spec:
+  port:
+    targetPort: syslog
+  tls:
+    termination: reencrypt
+    insecureEdgeTerminationPolicy: Redirect
+  to:
+    kind: Service
+    name: noobaa-syslog
+    weight: 100
+  wildcardPolicy: None
