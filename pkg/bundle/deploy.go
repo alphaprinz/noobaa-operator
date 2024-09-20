@@ -1483,7 +1483,7 @@ spec:
       status: {}
 `
 
-const Sha256_deploy_crds_noobaa_io_noobaas_yaml = "38b7017c6a61b5cdd86953e2494c7ca98eeb7001c86bb39c8611523691c6de08"
+const Sha256_deploy_crds_noobaa_io_noobaas_yaml = "7c30abe7205caa5244a5c84b17556a352c0dcf0d6ccf204b035e1c11b00312c9"
 
 const File_deploy_crds_noobaa_io_noobaas_yaml = `---
 apiVersion: apiextensions.k8s.io/v1
@@ -2515,6 +2515,9 @@ spec:
                       - guaranteed - much more reliable but need to provide a storage class that supports RWX PVs
                     type: string
                 type: object
+              notificationsPVC:
+                description: Name of PVC used for notification persistent files.
+                type: string
               cleanupPolicy:
                 description: CleanupPolicy (optional) Indicates user's policy for
                   deletion

@@ -1028,6 +1028,9 @@ spec:
                       - guaranteed - much more reliable but need to provide a storage class that supports RWX PVs
                     type: string
                 type: object
+              notificationsPVC:
+                description: Name of PVC used for notification persistent files.
+                type: string
               cleanupPolicy:
                 description: CleanupPolicy (optional) Indicates user's policy for
                   deletion
