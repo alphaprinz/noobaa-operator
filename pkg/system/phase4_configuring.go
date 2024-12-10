@@ -424,6 +424,31 @@ func (r *Reconciler) SetDesiredDeploymentEndpoint() error {
 				util.MergeEnvArrays(&c.Env, &[]corev1.EnvVar{envVar});
 			}
 
+			if len(r.NooBaa.Spec.CustomEnv) > 0 {
+				for _, customEnvVar := range r.NooBaa.Spec.CustomEnv {
+
+					var existing = false
+
+					for i := 0; i < len(c.Env); i++ {
+						if c.Env[i].Name == customEnvVar.Name {
+							c.Env[i].Value = customEnvVar.Value
+							existing = true
+						}
+					}
+
+					if existing {
+						continue
+					}
+
+					envVar := corev1.EnvVar{
+						Name: customEnvVar.Name,
+						Value: customEnvVar.Value,
+					}
+
+					util.MergeEnvArrays(&c.Env, &[]corev1.EnvVar{envVar})
+				}
+			}
+
 			c.SecurityContext = &corev1.SecurityContext{
 				Capabilities: &corev1.Capabilities{
 					Add: []corev1.Capability{"SETUID", "SETGID"},
