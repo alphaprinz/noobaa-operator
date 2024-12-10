@@ -231,6 +231,8 @@ type NooBaaSpec struct {
 	// BucketNotifications (optional) controls bucket notification options
 	// +optional
 	BucketNotifications BucketNotificationsSpec `json:"bucketNotifications,omitempty"`
+
+	CustomEnv []CustomEnvVar `json:"customEnv,omitempty"`
 }
 
 // AutoscalerSpec defines different actoscaling spec such as autoscaler type and prometheus namespace
@@ -592,3 +594,9 @@ const (
 	// BucketLoggingTypeGuaranteed is guaranteed
 	BucketLoggingTypeGuaranteed BucketLoggingTypes = "guaranteed"
 )
+
+type CustomEnvVar struct {
+
+	Name string `json:"name"`
+	Value string `json:"value"`
+}

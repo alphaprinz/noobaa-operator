@@ -1135,6 +1135,18 @@ spec:
                       More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                     type: object
                 type: object
+              customEnv:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+                  required:
+                  - name
+                  - value
+                  type: object
+                type: array
               dbConf:
                 description: DBConf (optional) overrides the default postgresql db
                   config
