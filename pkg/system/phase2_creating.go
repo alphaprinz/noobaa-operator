@@ -395,34 +395,6 @@ func (r *Reconciler) setDesiredCoreEnv(c *corev1.Container) {
 			if r.OAuthEndpoints != nil {
 				c.Env[j].Value = r.OAuthEndpoints.TokenEndpoint
 			}
-		case "POSTGRES_USER":
-			if r.NooBaa.Spec.ExternalPgSecret == nil {
-				if c.Env[j].Value != "" {
-					c.Env[j].Value = ""
-				}
-				c.Env[j].ValueFrom = &corev1.EnvVarSource{
-					SecretKeyRef: &corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: r.SecretDB.Name,
-						},
-						Key: "user",
-					},
-				}
-			}
-		case "POSTGRES_PASSWORD":
-			if r.NooBaa.Spec.ExternalPgSecret == nil {
-				if c.Env[j].Value != "" {
-					c.Env[j].Value = ""
-				}
-				c.Env[j].ValueFrom = &corev1.EnvVarSource{
-					SecretKeyRef: &corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: r.SecretDB.Name,
-						},
-						Key: "password",
-					},
-				}
-			}
 		case "POSTGRES_CONNECTION_STRING":
 			if r.NooBaa.Spec.ExternalPgSecret != nil {
 				if c.Env[j].Value != "" {
@@ -532,7 +504,24 @@ func (r *Reconciler) SetDesiredCoreApp() error {
 				}}
 				util.MergeVolumeMountList(&c.VolumeMounts, &configMapVolumeMounts)
 			}
-			if r.ExternalPgSSLSecret != nil && util.KubeCheckQuiet(r.ExternalPgSSLSecret) {
+			if r.ExternalPgSecret == nil {
+				secretVolumeMounts := []corev1.VolumeMount{{
+					Name:      r.SecretDB.Name,
+					MountPath: "/etc/internal-db-secret",
+					ReadOnly:  true,
+				}}
+				util.MergeVolumeMountList(&c.VolumeMounts, &secretVolumeMounts)
+
+				secretVolumes := []corev1.Volume{{
+					Name: r.SecretDB.Name,
+					VolumeSource: corev1.VolumeSource{
+						Secret: &corev1.SecretVolumeSource{
+							SecretName: r.SecretDB.Name,
+						},
+					},
+				}}
+				util.MergeVolumeList(&podSpec.Volumes, &secretVolumes)
+			} else if r.ExternalPgSSLSecret != nil && util.KubeCheckQuiet(r.ExternalPgSSLSecret) {
 				secretVolumeMounts := []corev1.VolumeMount{{
 					Name:      r.ExternalPgSSLSecret.Name,
 					MountPath: "/etc/external-db-secret",
