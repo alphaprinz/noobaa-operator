@@ -23,7 +23,7 @@ echo "--obc-crd=${OBC_CRD}"
 ./build/_output/bin/noobaa-operator-local olm catalog -n openshift-storage \
 --dir ${MANIFESTS} \
 --odf \
---include-cnpg \
+#--include-cnpg \
 --csv-name ${CSV_NAME} \
 --skip-range "${SKIP_RANGE}" \
 --replaces "${REPLACES}" \
@@ -33,7 +33,7 @@ echo "--obc-crd=${OBC_CRD}"
 --operator-image ${OPERATOR_IMAGE} \
 --cosi-sidecar-image ${COSI_SIDECAR_IMAGE} \
 --obc-crd=${OBC_CRD}
---cnpg-image ${CNPG_IMAGE}
+#--cnpg-image ${CNPG_IMAGE}
 
 temp_csv=$(mktemp)
 
