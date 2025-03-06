@@ -799,10 +799,19 @@ func addCnpgToCSV(csv *operv1.ClusterServiceVersion, csvParams *generateCSVParam
 	resources.CnpgOperatorDeployment.Spec.Template.Spec.Containers[0].SecurityContext.Capabilities = &corev1.Capabilities{
 		Drop: []corev1.Capability{"ALL"},
 	}
+
+	//set webhook cert dir
 	resources.CnpgOperatorDeployment.Spec.Template.Spec.Containers[0].Env = append(resources.CnpgOperatorDeployment.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{
 		Name:  "WEBHOOK_CERT_DIR",
-		Value: "/apiserver.local.config/certificates",
+		Value: "/run/secrets/cnpg.io/webhook",
 	})
+
+	// modify the web hook secret name to odf's webhook secret
+	for i := range resources.CnpgOperatorDeployment.Spec.Template.Spec.Volumes {
+		if resources.CnpgOperatorDeployment.Spec.Template.Spec.Volumes[i].Name == "webhook-certificates" {
+			resources.CnpgOperatorDeployment.Spec.Template.Spec.Volumes[i].Secret.SecretName = "webhook-cert-secret"
+		}
+	}
 
 	if csvParams.IsForODF {
 		// add tolerations to the cnpg operator deployment
